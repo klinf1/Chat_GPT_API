@@ -1,6 +1,7 @@
 import os
 import openai
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler
+from telegram.ext.filters import Filters
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,7 +23,6 @@ def echo(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 
-# Define the function that sends a request to the OpenAI API to get the response
 def get_response(text):
     # Use the OpenAI API to generate a response
     response = openai.Completion.create(
