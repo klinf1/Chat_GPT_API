@@ -25,7 +25,10 @@ def echo(update, context):
 def get_response(text):
     # Use the OpenAI API to generate a response
     response = openai.Completion.create(
-        engine="davinci", prompt=text, max_tokens=50
+        model='text-davinci-003',
+        prompt=text,
+        max_tokens=50,
+        temperature=0.2,
     )
     return response.choices[0].text.strip()
 
