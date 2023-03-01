@@ -1,12 +1,12 @@
 import os
 import openai
 from telegram.ext import Updater, CommandHandler, MessageHandler, filters
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 # Set up the OpenAI API credentials
-openai.api_key = os.getenv('OPEN_AI_API_KEY')
+openai.api_key = os.environ.get('OPEN_AI_API_KEY')
 
 
 # Define the Telegram bot handler functions
@@ -34,7 +34,10 @@ def get_response(text):
 def main():
 
     # Create the Telegram bot updater
-    updater = Updater(token=os.getenv('TELEGRAM_BOT_TOKEN'), use_context=True)
+    updater = Updater(
+        token=os.environ.get('TELEGRAM_BOT_TOKEN'),
+        use_context=True
+        )
 
     # Add the Telegram bot handler functions
     dispatcher = updater.dispatcher
