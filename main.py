@@ -1,7 +1,6 @@
 import os
 import openai
-from telegram.ext import Updater, CommandHandler, MessageHandler
-from telegram.ext.filters import Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, filters
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -40,7 +39,7 @@ def main():
     # Add the Telegram bot handler functions
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler('start', start))
-    dispatcher.add_handler(MessageHandler(Filters.text, echo))
+    dispatcher.add_handler(MessageHandler(filters.TEXT, echo))
 
     # Start the Telegram bot
     updater.start_polling()
