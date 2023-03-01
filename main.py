@@ -28,7 +28,7 @@ def get_response(text):
         model='text-davinci-003',
         prompt=text,
         max_tokens=3000,
-        temperature=0.2,
+        temperature=0.5,
     )
     return response.choices[0].text.strip()
 
