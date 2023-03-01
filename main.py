@@ -27,7 +27,7 @@ def get_response(text):
     response = openai.Completion.create(
         model='text-davinci-003',
         prompt=text,
-        max_tokens=50,
+        max_tokens=3000,
         temperature=0.2,
     )
     return response.choices[0].text.strip()
