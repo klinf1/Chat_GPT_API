@@ -1,9 +1,7 @@
 import os
 import openai
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-# from dotenv import load_dotenv
 
-# load_dotenv()
 
 # Set up the OpenAI API credentials
 openai.api_key = os.environ.get('OPEN_AI_API_KEY')
@@ -25,15 +23,14 @@ def echo(update, context):
 def get_response(text):
     # Use the OpenAI API to generate a response
     response = openai.Completion.create(
-        model='text-davinci-003',
+        model='gpt-3.5-turbo',
         prompt=text,
-        max_tokens=3000,
+        max_tokens=4000,
         temperature=0.5,
     )
     return response.choices[0].text.strip()
 
 
-# Set up the Telegram bot updater and start the bot
 def main():
 
     # Create the Telegram bot updater
