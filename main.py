@@ -23,7 +23,7 @@ class Chat:
         self.check_history()
         self.message_history.append(message)
         response = openai.Completion.create(
-            model='text-davinci-003',
+            model='gpt-3.5-turbo',
             prompt=str(self.message_history)+' '+message,
             max_tokens=4000,
             temperature=0.5,
