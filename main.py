@@ -28,6 +28,7 @@ class Chat:
                 'content': response['choices'][0]['message'].content
             }
         )
+        print(self.messages)
         return response['choices'][0]['message'].content
 
 
