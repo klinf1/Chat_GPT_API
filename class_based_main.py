@@ -1,8 +1,11 @@
 import os
 import openai
+import random
+import string
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 
+# Set up the OpenAI API credentials
 openai.api_key = os.environ.get('OPEN_AI_API_KEY')
 
 
@@ -50,13 +53,19 @@ def initialize_class(update, context):
 
 
 def main():
+
+    # Create the Telegram bot updater
     updater = Updater(
         token=os.environ.get('TELEGRAM_BOT_TOKEN'),
         use_context=True
         )
+
+    # Add the Telegram bot handler functions
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(MessageHandler(Filters.text, initialize_class))
+
+    # Start the Telegram bot
     updater.start_polling()
     updater.idle()
 
