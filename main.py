@@ -7,11 +7,12 @@ openai.api_key = os.environ.get('OPEN_AI_API_KEY')
 
 
 class Chat:
+    messages = [
+        {'role': 'system', 'content': 'You are a helpful assistant.'}
+    ]
 
     def __init__(self):
-        self.messages = [
-            {'role': 'system', 'content': 'You are a helpful assistant.'}
-        ]
+        pass
 
     def start_chat(self, message):
         self.messages.append(
