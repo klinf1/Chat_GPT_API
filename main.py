@@ -14,6 +14,10 @@ class Chat:
     def __init__(self):
         pass
 
+    def check_messages(self):
+        if len(self.messages) > 5:
+            self.messages.pop(1)
+
     def start_chat(self, message):
         self.messages.append(
             {'role': 'user', 'content': message}
@@ -30,6 +34,7 @@ class Chat:
             }
         )
         print(self.messages)
+        self.check_messages()
         return response['choices'][0]['message'].content
 
 
