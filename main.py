@@ -39,7 +39,7 @@ def start(update, context):
 
 
 def initialize_class(update, context):
-    new_instance = Chat(update.effective_chat.id)
+    new_instance = Chat()
     response = new_instance.start_chat(update.message.text)
     context.bot.send_message(
         chat_id=update.effective_chat.id,
