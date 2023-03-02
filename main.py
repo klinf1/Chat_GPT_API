@@ -8,29 +8,27 @@ openai.api_key = os.environ.get('OPEN_AI_API_KEY')
 
 class Chat:
 
-    def __init__(self, chat_id):
-        self.chat_id = chat_id
-        self.message_history = []
-
-    def __repr__(self) -> str:
-        return str(self.chat_id)
-
-    def check_history(self):
-        if len(self.message_history) > 6:
-            self.message_history.pop(0)
+    def __init__(self):
+        self.messages = [
+            {'role': 'system', 'content': 'You are a helpful assistant.'}
+        ]
 
     def start_chat(self, message):
-        self.check_history()
-        self.message_history.append(message)
-        response = openai.Completion.create(
+        self.messages.append(
+            {'role': 'user', 'content': message}
+        )
+        response = openai.ChatCompletion.create(
             model='gpt-3.5-turbo',
-            prompt=str(self.message_history)+' '+message,
-            max_tokens=4000,
+            messages=self.messages,
             temperature=0.5,
         )
-        self.check_history()
-        self.message_history.append(response.choices[0].text.strip())
-        return response.choices[0].text.strip()
+        self.messages.append(
+            {
+                'role': 'assistant',
+                'content': response['choices'][0]['message'].content
+            }
+        )
+        return response['choices'][0]['message'].content
 
 
 def start(update, context):
