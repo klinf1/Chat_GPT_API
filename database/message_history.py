@@ -67,8 +67,8 @@ def update_user_tokens(chat_id, usage, con, cur):
 
 def insert_new_user(chat_id):
     con, cur = get_connection()
-    data = [chat_id]
-    cur.execute('''INSERT INTO message_history (chat_id) VALUES (?)''', data)
+    data = ['You are a helpful assistant', 0.5, chat_id]
+    cur.execute('''INSERT INTO message_history (chat_id, system_message, temperature) VALUES (?)''', data)
     con.commit()
     con.close()
 
