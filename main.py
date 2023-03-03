@@ -26,12 +26,12 @@ class Chat:
         return messages
 
     def start_chat(self, update):
-        messages = self.mix_messages(update.effective_chat_id)
+        messages = self.mix_messages(update.effective_chat.id)
         response = openai.ChatCompletion.create(
             model='gpt-3.5-turbo',
             messages=messages,
             temperature=message_history.get_temperature(
-                update.effective_chat_id
+                update.effective_chat.id
             ),
         )
         token_usage = response['usage']['total_tokens']
@@ -41,10 +41,10 @@ class Chat:
         }
         message_history.update_user_data(
             new_data,
-            update.effective_chat_id
+            update.effective_chat.id
         )
         message_history.check_current_user_tokens(
-            update.effective_chat_id,
+            update.effective_chat.id,
             token_usage
         )
         return response['choices'][0]['message'].content
@@ -55,7 +55,7 @@ def start(update, context):
         chat_id=update.effective_chat.id,
         text='Hi! I am your OpenAI bot. How can I help you?'
     )
-    message_history.insert_new_user(update.effective_chat_id)
+    message_history.insert_new_user(update.effective_chat.id)
 
 
 def initialize_class(update, context):
