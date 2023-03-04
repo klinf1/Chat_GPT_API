@@ -142,7 +142,7 @@ def main():
             logger.error(error)
 
     updater = Updater(
-        token='5566222876:AAGH46ramuGEjqQ14iQyyIT9vTThSELGXsU',
+        token=os.getenv('TELEGRAM_BOT_TOKEN'),
         use_context=True
         )
     dispatcher = updater.dispatcher
