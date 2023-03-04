@@ -60,15 +60,11 @@ def get_current_user_tokens(chat_id: int, cur):
 
 def update_user_tokens(chat_id, usage, con, cur):
     current_usage = get_current_user_tokens(chat_id, cur)
-    print(current_usage)
     if current_usage != 0:
         total = usage + current_usage
-        print(total)
     else:
         total = usage
-        print('alt', total)
     total = [total, chat_id]
-    print(total)
     cur.execute('''UPDATE message_history SET tokens_used = ? WHERE chat_id = ? ''', total)
     con.commit()
 
@@ -110,7 +106,6 @@ def check_current_user_tokens(chat_id, usage):
         deleted_recieved = utils.cut_string_end(messages_recieved)
         freed_tokens = utils.get_token_count(deleted_sent) + utils.get_token_count(deleted_recieved)
         freed_tokens = (0 - freed_tokens)
-        print(freed_tokens)
         update_user_tokens(chat_id, freed_tokens, con, cur)
     con.close()
 
