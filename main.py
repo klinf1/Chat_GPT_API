@@ -48,7 +48,7 @@ class Chat:
                     update.effective_chat.id
                 ),
             )
-            logger.info('запрос к АПИ успешен')
+            logger.info('api request success')
         except Exception as error:
             logger.error(error)
         return response
@@ -90,7 +90,7 @@ def initialize_class(update, context):
             chat_id=update.effective_chat.id,
             text=message
         )
-        logger.info(f'сообщение {message} отправлено')
+        logger.info(f'message {message} sent')
     except Exception as error:
         logger.error(error)
 
