@@ -56,10 +56,20 @@ class Chat:
 
 
 def set_temperature(update, context):
-    if 0 <= float(context.args[0]) <= 1:
+    tempr = context.args[0]
+    if type(context.args[0]) == str:
+        if int(context.args[0][0]) > 1 or int(context.args[0][0]) < 0:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text=('Temperature should be between 0 and 1, '
+                      'please provide a valid number')
+                )
+        if context.args[0][1] == ',':
+            tempr = context.args[0].replace(',', '.')
+    if 0 <= float(tempr) <= 1:
         try:
             message_history.update_user_data(
-                {'temperature': context.args[0]},
+                {'temperature': tempr},
                 update.effective_chat.id
             )
             temp = message_history.get_temperature(update.effective_chat.id)
@@ -132,7 +142,7 @@ def main():
             logger.error(error)
 
     updater = Updater(
-        token=os.getenv('TELEGRAM_BOT_TOKEN'),
+        token='5566222876:AAGH46ramuGEjqQ14iQyyIT9vTThSELGXsU',
         use_context=True
         )
     dispatcher = updater.dispatcher
