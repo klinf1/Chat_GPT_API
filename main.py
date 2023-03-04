@@ -56,7 +56,7 @@ class Chat:
 
 
 def set_temperature(update, context):
-    if context.args[0] in range(0, 1):
+    if 0 <= context.args[0] <= 1:
         message_history.update_user_data(
             {'temperature': context.args[0]},
             update.effective_chat.id
