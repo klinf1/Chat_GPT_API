@@ -90,7 +90,7 @@ def initialize_class(update, context):
             chat_id=update.effective_chat.id,
             text=message
         )
-        logger.info(f'message {message} sent')
+        logger.info('message sent')
     except Exception as error:
         logger.error(error)
 
