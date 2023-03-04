@@ -1,11 +1,12 @@
 import os
 import openai
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from dotenv import load_dotenv
 
 from database import message_history
 
-
-openai.api_key = os.environ.get('OPEN_AI_API_KEY')
+load_dotenv()
+openai.api_key = os.getenv('OPEN_AI_API_KEY')
 
 
 class Chat:
@@ -13,7 +14,7 @@ class Chat:
     def __init__(self):
         pass
 
-    def mix_messages(self, chat_id):
+    def mix_messages(self, chat_id, current_message):
         system = message_history.get_system_message(chat_id)
         sent = message_history.get_sent_messages(chat_id)
         recieved = message_history.get_recieved_messages(chat_id)
@@ -23,10 +24,14 @@ class Chat:
         for i in range(0, len(sent)-1):
             messages.append(sent[i])
             messages.append(recieved[i])
+        messages.append({'role': 'user', 'content': current_message})
         return messages
 
     def start_chat(self, update):
-        messages = self.mix_messages(update.effective_chat.id)
+        messages = self.mix_messages(
+            update.effective_chat.id,
+            update.message.text
+        )
         response = openai.ChatCompletion.create(
             model='gpt-3.5-turbo',
             messages=messages,
@@ -34,20 +39,7 @@ class Chat:
                 update.effective_chat.id
             ),
         )
-        token_usage = response['usage']['total_tokens']
-        new_data = {
-            'message_sent': update.message.text,
-            'message_recieved': response['choices'][0]['message'].content
-        }
-        message_history.update_user_data(
-            new_data,
-            update.effective_chat.id
-        )
-        message_history.check_current_user_tokens(
-            update.effective_chat.id,
-            token_usage
-        )
-        return response['choices'][0]['message'].content
+        return response
 
 
 def start(update, context):
@@ -61,9 +53,22 @@ def start(update, context):
 def initialize_class(update, context):
     new_instance = Chat()
     response = new_instance.start_chat(update)
+    token_usage = response['usage']['total_tokens']
+    new_data = {
+        'message_sent': update.message.text,
+        'message_recieved': response['choices'][0]['message'].content
+    }
+    message_history.update_user_data(
+        new_data,
+        update.effective_chat.id
+    )
+    message_history.check_current_user_tokens(
+        update.effective_chat.id,
+        token_usage
+    )
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text=response
+        text=response['choices'][0]['message'].content
     )
 
 
@@ -71,7 +76,7 @@ def main():
     if not os.path.isfile('./message_history.db'):
         message_history.establish_database()
     updater = Updater(
-        token=os.environ.get('TELEGRAM_BOT_TOKEN'),
+        token=os.getenv('TELEGRAM_BOT_TOKEN'),
         use_context=True
         )
     dispatcher = updater.dispatcher
