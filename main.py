@@ -55,6 +55,23 @@ class Chat:
         return response
 
 
+def set_temperature(update, context):
+    if context.args[0] in range(0, 1):
+        message_history.update_user_data(
+            {'temperature': context.args[0]},
+            update.effective_chat.id
+        )
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text='Temperature setting saved'
+        )
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=('Temperature should be between 0 and 1,'
+              'please provide a valid number')
+    )
+
+
 def start(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
@@ -112,6 +129,11 @@ def main():
         )
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler('start', start))
+    dispatcher.add_handler(CommandHandler(
+        'settemperature',
+        set_temperature,
+        pass_args=True
+    ))
     dispatcher.add_handler(MessageHandler(Filters.text, initialize_class))
     updater.start_polling()
     updater.idle()
