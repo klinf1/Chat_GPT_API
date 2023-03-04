@@ -61,15 +61,17 @@ def set_temperature(update, context):
             {'temperature': context.args[0]},
             update.effective_chat.id
         )
+        temp = message_history.get_temperature(update.effective_chat.id)
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text='Temperature setting saved'
+            text=f'Temperature setting {temp} saved'
         )
-    context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text=('Temperature should be between 0 and 1,'
-              'please provide a valid number')
-    )
+    else:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=('Temperature should be between 0 and 1, '
+                  'please provide a valid number')
+        )
 
 
 def start(update, context):
