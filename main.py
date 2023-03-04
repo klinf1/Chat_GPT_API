@@ -57,15 +57,21 @@ class Chat:
 
 def set_temperature(update, context):
     if 0 <= float(context.args[0]) <= 1:
-        message_history.update_user_data(
-            {'temperature': context.args[0]},
-            update.effective_chat.id
-        )
-        temp = message_history.get_temperature(update.effective_chat.id)
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f'Temperature setting {temp} saved'
-        )
+        try:
+            message_history.update_user_data(
+                {'temperature': context.args[0]},
+                update.effective_chat.id
+            )
+            temp = message_history.get_temperature(update.effective_chat.id)
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text=f'Temperature setting {temp} saved'
+            )
+            logger.info(
+                f'temprerature setting {update.effective_chat.id} {temp} saved'
+            )
+        except Exception as error:
+            logger.error(error)
     else:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
