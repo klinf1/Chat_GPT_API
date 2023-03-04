@@ -29,9 +29,10 @@ class Chat:
         messages = []
         if system[0].get('content'):
             messages.append(system[0])
-        for i in range(0, len(sent)-1):
-            messages.append(sent[i])
-            messages.append(recieved[i])
+        if len(sent) != 0 and len(recieved) != 0:
+            for i in range(0, len(sent)-1):
+                messages.append(sent[i])
+                messages.append(recieved[i])
         messages.append({'role': 'user', 'content': current_message})
         return messages
 
