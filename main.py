@@ -1,4 +1,8 @@
 import os
+import logging
+
+from logging.handlers import RotatingFileHandler
+
 import openai
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from dotenv import load_dotenv
@@ -7,6 +11,7 @@ from database import message_history
 
 load_dotenv()
 openai.api_key = os.getenv('OPEN_AI_API_KEY')
+logger = logging.getLogger(__name__)
 
 
 class Chat:
@@ -15,9 +20,12 @@ class Chat:
         pass
 
     def mix_messages(self, chat_id, current_message):
-        system = message_history.get_system_message(chat_id)
-        sent = message_history.get_sent_messages(chat_id)
-        recieved = message_history.get_recieved_messages(chat_id)
+        try:
+            system = message_history.get_system_message(chat_id)
+            sent = message_history.get_sent_messages(chat_id)
+            recieved = message_history.get_recieved_messages(chat_id)
+        except Exception as error:
+            logger.error(error)
         messages = []
         if system[0].get('content'):
             messages.append(system[0])
@@ -32,13 +40,17 @@ class Chat:
             update.effective_chat.id,
             update.message.text
         )
-        response = openai.ChatCompletion.create(
-            model='gpt-3.5-turbo',
-            messages=messages,
-            temperature=message_history.get_temperature(
-                update.effective_chat.id
-            ),
-        )
+        try:
+            response = openai.ChatCompletion.create(
+                model='gpt-3.5-turbo',
+                messages=messages,
+                temperature=message_history.get_temperature(
+                    update.effective_chat.id
+                ),
+            )
+            logger.info('запрос к АПИ успешен')
+        except Exception as error:
+            logger.error(error)
         return response
 
 
@@ -58,23 +70,38 @@ def initialize_class(update, context):
         'message_sent': update.message.text,
         'message_recieved': response['choices'][0]['message'].content
     }
-    message_history.update_user_data(
-        new_data,
-        update.effective_chat.id
-    )
-    message_history.check_current_user_tokens(
-        update.effective_chat.id,
-        token_usage
-    )
-    context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text=response['choices'][0]['message'].content
-    )
+    try:
+        message_history.update_user_data(
+            new_data,
+            update.effective_chat.id
+        )
+    except Exception as error:
+        logger.error(error)
+    try:
+        message_history.check_current_user_tokens(
+            update.effective_chat.id,
+            token_usage
+        )
+    except Exception as error:
+        logger.error(error)
+    try:
+        message = response['choices'][0]['message'].content
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=message
+        )
+        logger.info(f'сообщение {message} отправлено')
+    except Exception as error:
+        logger.error(error)
 
 
 def main():
     if not os.path.isfile('./message_history.db'):
-        message_history.establish_database()
+        try:
+            message_history.establish_database()
+        except Exception as error:
+            logger.error(error)
+
     updater = Updater(
         token=os.getenv('TELEGRAM_BOT_TOKEN'),
         use_context=True
@@ -87,4 +114,15 @@ def main():
 
 
 if __name__ == '__main__':
+    logger.setLevel(logging.DEBUG)
+    handler = RotatingFileHandler(
+        'my_logger.log',
+        maxBytes=50000000,
+        backupCount=5
+    )
+    formatter = logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(lineno)s - %(funcName)s - %(message)s'
+    )
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
     main()
