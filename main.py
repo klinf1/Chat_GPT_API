@@ -48,7 +48,7 @@ class Chat:
                     update.effective_chat.id
                 ),
             )
-            logger.info('api request success')
+            logger.info(f'api request success from {update.effective_chat.id}')
         except Exception as error:
             logger.error(error)
         return response
@@ -59,11 +59,14 @@ def start(update, context):
         chat_id=update.effective_chat.id,
         text='Hi! I am your OpenAI bot. How can I help you?'
     )
-    message_history.insert_new_user(update.effective_chat.id)
+    if not message_history.check_user_exists(update.effective_chat.id):
+        message_history.insert_new_user(update.effective_chat.id)
 
 
 def initialize_class(update, context):
     new_instance = Chat()
+    if not message_history.check_user_exists(update.effective_chat.id):
+        message_history.insert_new_user(update.effective_chat.id)
     response = new_instance.start_chat(update)
     token_usage = response['usage']['total_tokens']
     new_data = {
@@ -90,7 +93,7 @@ def initialize_class(update, context):
             chat_id=update.effective_chat.id,
             text=message
         )
-        logger.info('message sent')
+        logger.info(f'message sent to {update.effective_chat.id}')
     except Exception as error:
         logger.error(error)
 

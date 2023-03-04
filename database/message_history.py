@@ -156,3 +156,13 @@ def get_temperature(chat_id):
     temp = float(functools.reduce(operator.add, temp[0]))
     con.close()
     return temp
+
+
+def check_user_exists(chat_id):
+    con, cur = get_connection()
+    users = cur.execute('''SELECT chat_id FROM message_history''').fetchall()
+    if (chat_id,) not in users:
+        con.close()
+        return False
+    con.close()
+    return True
