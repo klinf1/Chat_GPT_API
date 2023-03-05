@@ -25,7 +25,19 @@ def main():
         use_context=True
         )
     dispatcher = updater.dispatcher
-    dispatcher.add_handler(CommandHandler('start', commands.start))
+    dispatcher.add_handler(CommandHandler(
+        'info',
+        commands.info
+    ))
+    dispatcher.add_handler(CommandHandler(
+        'setsystem',
+        commands.set_system,
+        pass_args=True
+    ))
+    dispatcher.add_handler(CommandHandler(
+        'start',
+        commands.start
+    ))
     dispatcher.add_handler(CommandHandler(
         'settemperature',
         commands.set_temperature,

@@ -1,9 +1,10 @@
 import logging
 
 import database
+import messages
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('logger')
 
 
 def start(update, context):
@@ -47,4 +48,26 @@ def set_temperature(update, context):
             chat_id=update.effective_chat.id,
             text=('Temperature should be between 0 and 1, '
                   'please provide a valid number')
+        )
+
+
+def set_system(update, context):
+    new_system = ' '.join(context.args)
+    to_update = {'system_message': new_system}
+    try:
+        database.update_user_data(to_update, update.effective_chat.id)
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=('New system message saved!')
+        )
+        logger.info(f'new system message "{new_system}" '
+                    f'for {update.effective_chat.id} set')
+    except Exception as error:
+        logger.error(error)
+
+
+def info(update, context):
+    context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=messages.INFO_MESSAGE
         )
