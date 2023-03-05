@@ -1,9 +1,8 @@
-import sqlite3
 import functools
 import operator
+import sqlite3
 
-from . import utils
-
+import utils
 
 FIELDS_TO_EDIT = ('messages_sent', 'messages_recieved', 'system_message', 'temperature')
 
