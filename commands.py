@@ -71,3 +71,13 @@ def info(update, context):
             chat_id=update.effective_chat.id,
             text=messages.INFO_MESSAGE
         )
+
+
+def view_settings(update, context):
+    context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=('Your cuurent system message is:\n'
+                  f'{database.get_system_message(update.effective_chat.id)}.'
+                  'Your current temperature is: '
+                  f'{database.get_temperature(update.effective_chat.id)}.')
+        )

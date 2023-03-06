@@ -43,6 +43,10 @@ def main():
         commands.set_temperature,
         pass_args=True
     ))
+    dispatcher.add_handler(CommandHandler(
+        'viewsettings',
+        commands.view_settings
+    ))
     dispatcher.add_handler(MessageHandler(Filters.text, text.initialize_class))
     updater.start_polling()
     updater.idle()
