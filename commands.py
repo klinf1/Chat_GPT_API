@@ -1,5 +1,7 @@
 import logging
 
+from telegram import ReplyKeyboardMarkup
+
 import database
 import messages
 
@@ -8,9 +10,13 @@ logger = logging.getLogger('logger')
 
 
 def start(update, context):
+    buttons = ReplyKeyboardMarkup([
+        ['/info', '/viewsettings']
+    ])
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text='Hi! I am your OpenAI bot. How can I help you?'
+        text='Hi! I am your OpenAI bot. How can I help you?',
+        reply_markup=buttons
     )
     if not database.check_user_exists(update.effective_chat.id):
         database.insert_new_user(update.effective_chat.id)
