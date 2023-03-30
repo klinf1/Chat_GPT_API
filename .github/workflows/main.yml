@@ -24,4 +24,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USER }}/telegram_helper_bot
+          tags: klinf/telegram_helper_bot:v2
