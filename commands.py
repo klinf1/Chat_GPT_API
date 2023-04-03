@@ -1,22 +1,18 @@
 import logging
 
-from telegram import ReplyKeyboardMarkup
-
 import database
 import messages
+import menu
 
 
 logger = logging.getLogger('logger')
 
 
 def start(update, context):
-    buttons = ReplyKeyboardMarkup([
-        ['/info', '/viewsettings']
-    ])
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text='Hi! I am your OpenAI bot. How can I help you?',
-        reply_markup=buttons
+        reply_markup=menu.main_menu()
     )
     if not database.check_user_exists(update.effective_chat.id):
         database.insert_new_user(update.effective_chat.id)
@@ -94,5 +90,31 @@ def view_settings(update, context):
             )
         logger.info(f'settings {cur_message}, {cur_temp} shown to '
                     f'{update.effective_chat.id}')
+    except Exception as error:
+        logger.error(error)
+
+
+def clear_user_history(update, context):
+    try:
+        database.clean_user_history(update.effective_chat.id)
+        logger.info(f'user {update.effective_chat.id} history cleaned')
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=('Your message history has '
+                  'been cleared successfully.')
+        )
+    except Exception as error:
+        logger.error(error)
+
+
+def clear_user_settings(update, context):
+    try:
+        database.clean_user_settings(update.effective_chat.id)
+        logger.info(f'user {update.effective_chat.id} settings cleaned')
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=('Your settings have '
+                  'been cleared successfully.')
+        )
     except Exception as error:
         logger.error(error)

@@ -76,13 +76,20 @@ def insert_new_user(chat_id):
     con.close()
 
 
-def clean_user_data(chat_id):
+def clean_user_settings(chat_id):
     con, cur = get_connection()
     data = [chat_id]
     cur.execute('''UPDATE message_history SET temperature = 0.5 WHERE chat_id = ? ''', data)
+    cur.execute('''UPDATE message_history SET system_message = '' WHERE chat_id = ? ''', data)
+    con.commit()
+    con.close()
+
+
+def clean_user_history(chat_id):
+    con, cur = get_connection()
+    data = [chat_id]
     cur.execute('''UPDATE message_history SET messages_sent = '' WHERE chat_id = ? ''', data)
     cur.execute('''UPDATE message_history SET messages_recieved = '' WHERE chat_id = ? ''', data)
-    cur.execute('''UPDATE message_history SET system_message = '' WHERE chat_id = ? ''', data)
     con.commit()
     con.close()
 

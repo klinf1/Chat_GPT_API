@@ -1,6 +1,6 @@
 INFO_MESSAGE = ('Welcome to my telegram bot, that '
                 'connects to OpenAI API and can be '
-                'used like ChatGPT service, provided on their site!\n'
+                'used like ChatGPT service, provided on their website!\n'
                 'Current functions include:\n'
                 '-Message history storage: this bot provides up to '
                 '2000 tokens of previous message history to the OpenAI, '
@@ -15,4 +15,5 @@ INFO_MESSAGE = ('Welcome to my telegram bot, that '
                 '-System message setting. It helps set up'
                 'the character of your bot. Default setting is'
                 ' <You are a helpful assistant>. To change it, use '
-                '/setsystem your_message.')
+                '/setsystem your_message.\n'
+                'This bot can also generate images! In order to do so, use /image your_prompt.')
