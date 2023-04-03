@@ -80,10 +80,19 @@ def info(update, context):
 
 
 def view_settings(update, context):
-    context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=('Your cuurent system message is:\n'
-                  f'{database.get_system_message(update.effective_chat.id)}.'
-                  'Your current temperature is: '
-                  f'{database.get_temperature(update.effective_chat.id)}.')
-        )
+    cur_message = database.get_system_message(
+        update.effective_chat.id
+    )[0].get('content')
+    cur_temp = database.get_temperature(update.effective_chat.id)
+    try:
+        context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text=('Your cuurent system message is:\n'
+                      f'{cur_message}.\n'
+                      'Your current temperature is '
+                      f'{cur_temp}.')
+            )
+        logger.info(f'settings {cur_message}, {cur_temp} shown to '
+                    f'{update.effective_chat.id}')
+    except Exception as error:
+        logger.error(error)
