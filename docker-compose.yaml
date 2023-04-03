@@ -1,0 +1,18 @@
+version: '3.9'
+
+
+services:
+
+  db:
+    container_name: message_history
+    image: nouchka/sqlite3:latest
+    volumes:
+      - /var/lib/message_history
+
+  bot:
+    container_name: helper_bot
+    image: klinf/telegram_helper_bot:v2
+    restart: always
+    env_file:
+      - .env
+
