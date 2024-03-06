@@ -20,7 +20,7 @@ def start(update, context):
 
 def set_temperature(update, context):
     tempr = context.args[0]
-    if type(context.args[0]) == str:
+    if type(context.args[0]) is str:
         if int(context.args[0][0]) > 1 or int(context.args[0][0]) < 0:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
