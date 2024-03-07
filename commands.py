@@ -11,10 +11,14 @@ logger = logging.getLogger('logger')
 def start(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text='Hi! I am your OpenAI bot. How can I help you?',
+        text='Здравствуйте! Чем я могу помочь?',
         reply_markup=menu.main_menu()
     )
     if not database.check_user_exists(update.effective_chat.id):
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=messages.INFO_MESSAGE
+        )
         database.insert_new_user(update.effective_chat.id)
 
 
@@ -24,8 +28,9 @@ def set_temperature(update, context):
         if int(context.args[0][0]) > 1 or int(context.args[0][0]) < 0:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text=('Temperature should be between 0 and 1, '
-                      'please provide a valid number')
+                text=('Значение температуры должно быть между '
+                      '0 и 1. Пожалуйста, введите подходящее'
+                      'значение')
                 )
         if context.args[0][1] == ',':
             tempr = context.args[0].replace(',', '.')
@@ -38,7 +43,7 @@ def set_temperature(update, context):
             temp = database.get_temperature(update.effective_chat.id)
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text=f'Temperature setting {temp} saved'
+                text=f'Значение температуры {temp} сохранено'
             )
             logger.info(
                 f'temprerature setting {update.effective_chat.id} {temp} saved'
@@ -48,8 +53,8 @@ def set_temperature(update, context):
     else:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=('Temperature should be between 0 and 1, '
-                  'please provide a valid number')
+            text=('Значение температуры должно быть числом '
+                  'от 0 до единицы.')
         )
 
 
@@ -60,9 +65,9 @@ def set_system(update, context):
         database.update_user_data(to_update, update.effective_chat.id)
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=('New system message saved!')
+            text=('Новое системное сообщение сохранено!')
         )
-        logger.info(f'new system message "{new_system}" '
+        logger.info(f'new system message '
                     f'for {update.effective_chat.id} set')
     except Exception as error:
         logger.error(error)
@@ -83,12 +88,12 @@ def view_settings(update, context):
     try:
         context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text=('Your cuurent system message is:\n'
+                text=('Текущее системное сообщение:\n'
                       f'{cur_message}.\n'
-                      'Your current temperature is '
+                      'Текущее значение температуры: '
                       f'{cur_temp}.')
             )
-        logger.info(f'settings {cur_message}, {cur_temp} shown to '
+        logger.info(f'settings shown to '
                     f'{update.effective_chat.id}')
     except Exception as error:
         logger.error(error)
@@ -100,8 +105,7 @@ def clear_user_history(update, context):
         logger.info(f'user {update.effective_chat.id} history cleaned')
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=('Your message history has '
-                  'been cleared successfully.')
+            text=('История сообщений была успешно очищена')
         )
     except Exception as error:
         logger.error(error)
@@ -113,8 +117,7 @@ def clear_user_settings(update, context):
         logger.info(f'user {update.effective_chat.id} settings cleaned')
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=('Your settings have '
-                  'been cleared successfully.')
+            text=('Настройки успешно сброшены')
         )
     except Exception as error:
         logger.error(error)
